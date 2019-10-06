@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, render_template
 
 from minc import tasks
 from minc import model
+from minc import redis
 
 app = Flask(__name__)
 
@@ -17,9 +18,13 @@ def hook():
     json_payload = request.get_json(force=True)
     package_name = json_payload.get("packageName")
     op_package_name = json_payload.get("OpPackage")
+    user_reg = json_payload.get("id")
+    fcm_token = json_payload.get("fcmToken")
+    post_time = json_payload.get("postTime")
 
     # Please do not DOS our own servers
-    if (
+    redis_check = redis.check_thread(user_reg, fcm_token, post_time)
+    if not redis_check or (
         package_name == "com.abotimable.minc"
         or op_package_name == "com.abotimable.minc"
     ):
