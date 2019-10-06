@@ -24,7 +24,7 @@ def hook():
 
     # Please do not DOS our own servers
     redis_check = redis.check_thread(user_reg, fcm_token, post_time)
-    if not redis_check and (
+    if not redis_check or (
         package_name == "com.abotimable.minc"
         or op_package_name == "com.abotimable.minc"
     ):
