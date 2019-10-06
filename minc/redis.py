@@ -6,8 +6,9 @@ r = redis.Redis(
 
 
 def check_thread(fcm, reg, post):
-    if r.get((fcm, reg, post)):
+    key = '{}:{}:{}'.format(fcm, reg, post)
+    if r.get(key):
         return False
     else:
-        r.set((fcm, reg, post), True)
+        r.set(key, 'True')
         return True
