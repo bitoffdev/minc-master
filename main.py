@@ -4,6 +4,18 @@ This is the one and only main program for the Minc backend.
 Usage:
     python3 main.py --help
 """
+import logging
+logging.basicConfig(level=logging.INFO)
+
+def elasticsearch():
+    import logging
+    from cmreslogging.handlers import CMRESHandler
+    handler = CMRESHandler(hosts=[{'host': 'localhost', 'port': 9200}],
+                           auth_type=CMRESHandler.AuthType.NO_AUTH,
+                           es_index_name="minc_index")
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
+    root_logger.addHandler(handler)
 
 
 def www(args):
@@ -15,6 +27,13 @@ def www(args):
 
 def worker(args):
     """start a celery worker"""
+    import celery.signals
+
+    @celery.signals.setup_logging.connect
+    def on_celery_setup_logging(**kwargs):
+        pass
+
+
     # from celery import current_app
     from celery.bin import worker
     from minc.tasks import app
@@ -27,6 +46,7 @@ def worker(args):
         "broker": "amqp://guest:guest@localhost:5672//",
         "loglevel": args.loglevel,
         "traceback": True,
+        "worker_hijack_root_logger": False,
     }
 
     worker.run(**options)
@@ -37,6 +57,7 @@ def main():
     import sys
 
     parser = argparse.ArgumentParser(prog=__file__)
+    parser.add_argument("--elasticsearch", action="store_true", default=False)
     subparsers = parser.add_subparsers(help="sub-command help")
 
     subparsers.add_parser("www", help="run the web server").set_defaults(func=www)
@@ -56,6 +77,8 @@ def main():
     if not "func" in args:
         parser.print_help()
         raise SystemExit
+    if args.elasticsearch:
+        elasticsearch()
     args.func(args)
 
 
