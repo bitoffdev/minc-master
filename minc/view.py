@@ -20,7 +20,7 @@ def hook():
     op_package_name = json_payload.get("OpPackage")
     user_reg = json_payload.get("id")
     fcm_token = json_payload.get("fcmToken")
-    post_time = json_payload.get("thread")
+    post_time = json_payload.get("postTime")
 
     # Please do not DOS our own servers
     redis_check = redis.check_thread(user_reg, fcm_token, post_time)
