@@ -14,7 +14,6 @@ def add(x, y):
 
 @app.task
 def hook(payload):
-    # type: (str) -> None
+    # type: (dict) -> None
     """take a JSON payload and process it"""
     logger.info("Processing payload {}".format(payload))  # TODO this bad security-wise
-    data = json.loads(payload)
