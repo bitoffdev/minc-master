@@ -20,7 +20,7 @@ def push_notification(registration_ids, title, body, icon, message):
         notification=notification,
         collapse_key="collapse_key",
         delay_while_idle=True,
-        time_to_live=604800,
+        time_to_live=300,
     )
     logger(res)
 
