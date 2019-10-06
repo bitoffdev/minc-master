@@ -1,31 +1,21 @@
 import logging
 import os
 
-from pushjack import GCMClient
+from pyfcm import FCMNotification
 
 from minc import settings
 
-client = GCMClient(api_key=settings.fcm_server_key)
+logger = logging.getLogger(__name__)
 
+push_service = FCMNotification(api_key=settings.fcm_server_key)
 
 def push_notification(registration_ids, title, body, icon, message):
-    notification = {"title": title, "body": body, "icon": icon}
-    alert = {"message": message, "notification": notification}
-
-    # Send to single device.
-    # NOTE: Keyword arguments are optional.
-    res = client.send(
-        registration_ids,
-        alert,
-        notification=notification,
-        collapse_key="collapse_key",
-        delay_while_idle=True,
-        time_to_live=300,
-    )
-    logger(res)
+    for token in registration_ids:
+        result = push_service.notify_single_device(registration_id=token, message_title=title, message_body=body)
+        logger.info(result)
 
 
-def logger(res):
+def log_result(res):
     # List of requests.Response objects from GCM Server.
     # List of messages sent.
     # List of registration ids sent.
