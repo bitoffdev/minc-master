@@ -32,7 +32,7 @@ def hook():
 
     title = json_payload.get("extras")["android.title"]
     text = json_payload.get("extras")["android.text"]
-    if title is None and text is None:
+    if title is None or text is None:
         return jsonify({"status": "rejected"})
     tasks.hook.delay(json_payload)
     return jsonify({"status": "ok"})
