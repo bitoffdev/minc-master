@@ -1,22 +1,27 @@
-import os
-from pushjack import GCMClient
 import logging
+import os
 
-client = GCMClient(api_key=os.environ['GCM'])
+from pushjack import GCMClient
+
+from minc import settings
+
+client = GCMClient(api_key=settings.fcm_server_key)
 
 
 def push_notification(registration_ids, title, body, icon, message):
-    notification = {'title': title, 'body': body, 'icon': icon}
-    alert = {'message': message, 'notification': notification}
+    notification = {"title": title, "body": body, "icon": icon}
+    alert = {"message": message, "notification": notification}
 
     # Send to single device.
     # NOTE: Keyword arguments are optional.
-    res = client.send(registration_ids,
-                      alert,
-                      notification=notification,
-                      collapse_key='collapse_key',
-                      delay_while_idle=True,
-                      time_to_live=604800)
+    res = client.send(
+        registration_ids,
+        alert,
+        notification=notification,
+        collapse_key="collapse_key",
+        delay_while_idle=True,
+        time_to_live=604800,
+    )
     logger(res)
 
 
@@ -29,12 +34,22 @@ def logger(res):
     # List of failed registration ids.
     # List of exceptions.
     # List of canonical ids (registration ids that have changed).
-    response_body = ["requests", "messages", "registration_ids", "data",
-                     "successes", "failures", "errors", "canonical_ids"]
+    response_body = [
+        "requests",
+        "messages",
+        "registration_ids",
+        "data",
+        "successes",
+        "failures",
+        "errors",
+        "canonical_ids",
+    ]
     for i in response_body:
         log_name = i + ".log"
         logfile = os.path.join(os.pardir, log_name)
-        logging.basicConfig(level=logging.DEBUG, filename=logfile, filemode="a+",
-                            format="%(asctime)-15s %(levelname)-8s %(message)s")
+        handler = logging.FileHandler(logfile)
+        log = logging.getLogger()
+        log.addHandler(handler)
+        log.setLevel(logging.INFO)
 
-        logging.info(getattr(res, i))
+        log.info(getattr(res, i, None))

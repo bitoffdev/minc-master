@@ -5,14 +5,19 @@ Usage:
     python3 main.py --help
 """
 import logging
+
 logging.basicConfig(level=logging.INFO)
+
 
 def elasticsearch():
     import logging
     from cmreslogging.handlers import CMRESHandler
-    handler = CMRESHandler(hosts=[{'host': 'localhost', 'port': 9200}],
-                           auth_type=CMRESHandler.AuthType.NO_AUTH,
-                           es_index_name="minc_index")
+
+    handler = CMRESHandler(
+        hosts=[{"host": "localhost", "port": 9200}],
+        auth_type=CMRESHandler.AuthType.NO_AUTH,
+        es_index_name="minc_index",
+    )
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
     root_logger.addHandler(handler)
@@ -32,7 +37,6 @@ def worker(args):
     @celery.signals.setup_logging.connect
     def on_celery_setup_logging(**kwargs):
         pass
-
 
     # from celery import current_app
     from celery.bin import worker

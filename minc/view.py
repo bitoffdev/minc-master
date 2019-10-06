@@ -15,6 +15,16 @@ def hello():
 def hook():
     # only accept JSON payloads
     json_payload = request.get_json(force=True)
+    package_name = json_payload.get("packageName")
+    op_package_name = json_payload.get("OpPackage")
+
+    # Please do not DOS our own servers
+    if (
+        package_name == "com.abotimable.minc"
+        or op_package_name == "com.abotimable.minc"
+    ):
+        return jsonify({"status": "rejected"})
+
     tasks.hook.delay(json_payload)
     return jsonify({"status": "ok"})
 
