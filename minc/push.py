@@ -32,7 +32,7 @@ def logger(res):
     logging.info(res.messages)
 
     # List of registration ids sent.
-    logging.basicConfig(level=logging.DEBUG, filename="response_data", filemode="a+",
+    logging.basicConfig(level=logging.DEBUG, filename="registration_ids", filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
     logging.info(res.registration_ids)
 
@@ -42,21 +42,21 @@ def logger(res):
     logging.info(res.data)
 
     # List of successful registration ids.
-    logging.basicConfig(level=logging.DEBUG, filename="response_data", filemode="a+",
+    logging.basicConfig(level=logging.DEBUG, filename="successes", filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
     logging.info(res.successes)
 
     # List of failed registration ids.
-    logging.basicConfig(level=logging.DEBUG, filename="response_data", filemode="a+",
+    logging.basicConfig(level=logging.DEBUG, filename="\failures", filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
     logging.info(res.failures)
 
     # List of exceptions.
-    logging.basicConfig(level=logging.DEBUG, filename="response_data", filemode="a+",
+    logging.basicConfig(level=logging.DEBUG, filename="errors", filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
     logging.info(res.errors)
 
     # List of canonical ids (registration ids that have changed).
-    logging.basicConfig(level=logging.DEBUG, filename="response_data", filemode="a+",
+    logging.basicConfig(level=logging.DEBUG, filename="canonical_ids", filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
     logging.info(res.canonical_ids)
